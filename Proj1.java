@@ -1,16 +1,26 @@
+import java.util.*;
+import java.io.*;
 
+public class Proj1
+{
 
-public class Proj1{
-
-	public static void main(String[] args)
+	public static void main(String[] args) throws FileNotFoundException
 	{
 		Proj1 a = new Proj1();
-		a.dictTree();
+		Node dictionaryTree = a.dictTree();
 	}
 	
-	public void dictTree(){
+	public void PasswordGeneration()
+	{
 		
-		String s = "Tests";
+	}
+	
+	public Node dictTree() throws FileNotFoundException
+	{
+		File dictText = new File("dictionary.txt");
+		Scanner fileIn = new Scanner(dictText);
+		
+		String s = fileIn.nextLine();
 		Node firstNode = new Node();
 		Node currentNode= firstNode;
 		
@@ -19,33 +29,47 @@ public class Proj1{
 		for(int i=0; i< s.length();i++)
 		{
 			currentNode.key = s.charAt(i);
+			if(i != s.length()-1)
+			{
 			currentNode.nextDown = new Node();
-			System.out.println(currentNode.key);
 			currentNode= currentNode.nextDown;
+			} else
+			{
+				currentNode.wordEnd = true;
+			}
 		}
 		
-		int charNumber;
-		//while(fileReader != eof)
-			
-			charNumber =0;
-			while(currentNode.nextRight !=null || currentNode.key != s.charAt(letterCount))
+		// fill in rest of tree with words <= 5 characters in length
+		do{
+			String t= fileIn.nextLine();
+			currentNode = firstNode;
+			if(t.length()<=5)// if we should just generate the tree with all dict words remove this
 			{
-				currentNode = currentNode.nextRight;
-			}
-			
-			if(currentNode.nextRight == null)
-			{
-				currentNode.nextRight = new Node();
-				currentNode.nextRight.key = s.charAt(letterCount);
-			} else {
-				if(currentNode.nextDown != null){
-					currentNode= currentNode.nextDown;
-				} else {
-					currentNode.nextDown = new Node();
-					currentNode.nextDown.key = s.charAt(letterCount);
+				for(int i=0; i<t.length(); i++)
+				{
+					if(currentNode == null)
+					{
+						currentNode = new Node();
+						currentNode.key = toLowerCase(t.charAt(i));
+						if(i == t.length()-1)
+						{
+							currentNode.wordEnd = true;
+						}
+						currentNode= currentNode.nextDown;
+					} else 
+					{
+						if(currentNode.key == t.charAt(i))
+						{
+							currentNode = currentNode.nextDown;
+						} else {
+							currentNode = currentNode.nextRight;
+						}
+					}
 				}
 			}
+		}while(fileIn.hasNextLine());
 		
+		return firstNode;
 	}
 	
 	private class Node
